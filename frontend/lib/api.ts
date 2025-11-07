@@ -1,23 +1,19 @@
-// frontend/lib/api.ts
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
 
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
+/**
+ * Busca todos os produtos
+ */
 export async function getProducts() {
-  const res = await fetch(`${API_BASE_URL}/products`, { cache: 'no-store' });
-  if (!res.ok) {
-    throw new Error('Erro ao carregar produtos');
-  }
+  const res = await fetch(`${API_URL}/products`, { cache: "no-store" });
+  if (!res.ok) throw new Error("Erro ao buscar produtos");
   return res.json();
 }
 
-export async function createProduct(data: any) {
-  const res = await fetch(`${API_BASE_URL}/products`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) {
-    throw new Error('Erro ao criar produto');
-  }
+/**
+ * Busca um produto pelo ID
+ */
+export async function getProductById(id: number) {
+  const res = await fetch(`${API_URL}/products/${id}`, { cache: "no-store" });
+  if (!res.ok) throw new Error("Erro ao buscar produto");
   return res.json();
 }

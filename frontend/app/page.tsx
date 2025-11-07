@@ -48,7 +48,7 @@ export default function Home() {
               <h2 className="font-semibold text-lg mt-3">{p.name}</h2>
               <p className="text-gray-500 text-sm">{p.description}</p>
               <p className="mt-2 font-bold text-green-700">
-                R$ {p.price.toFixed(2)}
+              R$ {Number(p.price).toFixed(2)}
               </p>
             </div>
           ))}

@@ -24,7 +24,8 @@ class Product extends Model
      * Tipos de dados para casting automático
      */
     protected $casts = [
-        'price' => 'decimal:2',
-        'stock' => 'integer',
+    'price' => 'float',
+    'stock' => 'integer',
     ];
+
 }

@@ -1,57 +1,82 @@
+import "./tailwind.css";
 import { ReactNode } from "react";
 import Link from "next/link";
-import "./tailwind.css";
-
 
 export const metadata = {
   title: "MicroLoja Artesanal",
-  description: "Seu e-commerce artesanal desenvolvido com Next.js e Laravel",
+  description: "E-commerce artesanal desenvolvido com Next.js e Laravel",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="pt-BR">
-      <body className="bg-gray-50 text-gray-800 font-sans antialiased flex flex-col min-h-screen">
+      <body className="bg-gray-50 text-gray-800 flex flex-col min-h-screen font-sans">
         {/* Navbar */}
-        <header className="bg-white shadow-sm fixed w-full top-0 left-0 z-50">
+        <header className="fixed top-0 left-0 w-full bg-white/90 backdrop-blur shadow-sm z-50">
           <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <Link href="/" className="text-2xl font-bold text-green-700 tracking-tight">
+            <Link
+              href="/"
+              className="text-2xl font-extrabold text-green-700 hover:text-green-800 transition-colors"
+            >
               🛍️ MicroLoja
             </Link>
 
-            <nav className="hidden md:flex space-x-8 text-sm font-medium">
-              <Link href="/" className="text-gray-700 hover:text-green-700 transition">
+            <nav className="hidden md:flex items-center space-x-8 font-medium">
+              <Link
+                href="/"
+                className="hover:text-green-700 transition-colors"
+              >
                 Início
               </Link>
-              <Link href="/cart" className="text-gray-700 hover:text-green-700 transition">
+              <Link
+                href="/cart"
+                className="hover:text-green-700 transition-colors"
+              >
                 Carrinho
               </Link>
-              <Link href="/login" className="text-gray-700 hover:text-green-700 transition">
+              <Link
+                href="/login"
+                className="hover:text-green-700 transition-colors"
+              >
                 Entrar
               </Link>
             </nav>
 
-            {/* Mobile Menu Placeholder */}
-            <button className="md:hidden text-gray-700 hover:text-green-700">
-              ☰
-            </button>
+            {/* Mobile menu */}
+            <div className="md:hidden">
+              <button
+                type="button"
+                className="p-2 text-gray-600 hover:text-green-700 transition"
+              >
+                ☰
+              </button>
+            </div>
           </div>
         </header>
 
-        {/* Main content */}
+        {/* Conteúdo principal */}
         <main className="flex-grow pt-24">{children}</main>
 
         {/* Footer */}
-        <footer className="bg-white border-t mt-10">
-          <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between text-sm text-gray-500">
-            <p>
-              © {new Date().getFullYear()} MicroLoja Artesanal —{" "}
-              <span className="text-green-700 font-medium">feito com ❤️ por Wendel Muniz</span>
+        <footer className="bg-white border-t border-gray-200 mt-10">
+          <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-sm text-gray-600 text-center md:text-left">
+              © {new Date().getFullYear()}{" "}
+              <span className="font-semibold text-green-700">
+                MicroLoja Artesanal
+              </span>{" "}
+              — feito com ❤️ por Wendel Muniz
             </p>
-            <div className="flex space-x-4 mt-3 md:mt-0">
-              <a href="#" className="hover:text-green-700 transition">Termos</a>
-              <a href="#" className="hover:text-green-700 transition">Privacidade</a>
-              <a href="#" className="hover:text-green-700 transition">Contato</a>
+            <div className="flex gap-4 text-sm text-gray-500">
+              <Link href="#" className="hover:text-green-700 transition-colors">
+                Termos
+              </Link>
+              <Link href="#" className="hover:text-green-700 transition-colors">
+                Privacidade
+              </Link>
+              <Link href="#" className="hover:text-green-700 transition-colors">
+                Contato
+              </Link>
             </div>
           </div>
         </footer>

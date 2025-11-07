@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 interface Product {
@@ -8,7 +8,6 @@ interface Product {
   name: string;
   description: string;
   price: number;
-  stock: number;
   image_url: string;
 }
 
@@ -16,38 +15,38 @@ export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    // Simulação inicial (depois vamos integrar com Laravel)
+    // Dados simulados – futuramente virão da API Laravel
     setProducts([
       {
         id: 1,
         name: "Vaso de Cerâmica Artesanal",
-        description: "Feito à mão com argila natural e acabamento esmaltado.",
+        description:
+          "Feito à mão com argila natural e acabamento esmaltado. Uma peça única para decoração.",
         price: 89.9,
-        stock: 12,
         image_url: "https://placehold.co/400x400?text=Vaso+Artesanal",
       },
       {
         id: 2,
-        name: "Bolsa de Crochê",
-        description: "Crochê artesanal feito com fio sustentável.",
-        price: 129.5,
-        stock: 8,
-        image_url: "https://placehold.co/400x400?text=Bolsa+Crochê",
+        name: "Bolsa de Crochê Sustentável",
+        description:
+          "Produzida com fio ecológico e design exclusivo. Ideal para o dia a dia.",
+        price: 129.9,
+        image_url: "https://placehold.co/400x400?text=Bolsa+Croch%C3%AA",
       },
       {
         id: 3,
-        name: "Sabonete Vegano Natural",
-        description: "Produzido com óleos vegetais e essências naturais.",
+        name: "Sabonete Natural Vegano",
+        description:
+          "Com óleos essenciais e fragrâncias suaves, perfeito para cuidados diários.",
         price: 19.9,
-        stock: 20,
         image_url: "https://placehold.co/400x400?text=Sabonete+Vegano",
       },
       {
         id: 4,
         name: "Quadro Decorativo em Madeira",
-        description: "Design rústico com acabamento artesanal exclusivo.",
+        description:
+          "Trabalho artesanal em madeira de reflorestamento, ideal para ambientes rústicos.",
         price: 210.0,
-        stock: 5,
         image_url: "https://placehold.co/400x400?text=Quadro+Decorativo",
       },
     ]);
@@ -56,13 +55,13 @@ export default function HomePage() {
   return (
     <div className="max-w-7xl mx-auto px-6">
       {/* Hero Section */}
-      <section className="text-center py-16 bg-gradient-to-r from-green-50 to-green-100 rounded-3xl shadow-sm mb-10">
-        <h1 className="text-4xl md:text-5xl font-bold text-green-800 mb-4">
+      <section className="text-center py-16 bg-gradient-to-r from-green-50 to-green-100 rounded-3xl shadow-sm mb-12">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-green-800 mb-4">
           Bem-vindo à MicroLoja Artesanal
         </h1>
-        <p className="text-gray-600 max-w-2xl mx-auto mb-6">
-          Produtos únicos, feitos à mão com amor 💚  
-          Apoie o trabalho artesanal e leve autenticidade para o seu dia a dia.
+        <p className="text-gray-600 max-w-2xl mx-auto mb-8 text-lg">
+          Produtos únicos feitos à mão com amor 💚 Apoie o trabalho artesanal e
+          leve autenticidade para o seu dia a dia.
         </p>
         <a
           href="#produtos"
@@ -72,8 +71,8 @@ export default function HomePage() {
         </a>
       </section>
 
-      {/* Produtos */}
-      <section id="produtos" className="py-6">
+      {/* Grade de produtos */}
+      <section id="produtos" className="pb-12">
         <h2 className="text-2xl font-semibold mb-8 text-gray-800 text-center">
           Produtos em Destaque
         </h2>
@@ -100,18 +99,13 @@ export default function HomePage() {
                 </div>
 
                 <div className="mt-4">
-                  <p className="text-green-700 font-bold text-lg">
+                  <p className="text-green-700 font-bold text-lg mb-2">
                     R$ {p.price.toFixed(2)}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    {p.stock > 0
-                      ? `Estoque: ${p.stock} unidades`
-                      : "Indisponível"}
                   </p>
 
                   <Link
                     href={`/product/${p.id}`}
-                    className="mt-3 inline-block w-full bg-green-600 text-white text-center font-medium py-2 rounded-lg hover:bg-green-700 transition"
+                    className="inline-block w-full bg-green-600 text-white text-center font-medium py-2 rounded-lg hover:bg-green-700 transition"
                   >
                     Ver Detalhes
                   </Link>

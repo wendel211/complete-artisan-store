@@ -1,0 +1,103 @@
+# ===========================================
+# ⚙️ GITIGNORE GLOBAL — Micro Loja Artesanal
+# Laravel + Next.js + Docker
+# ===========================================
+
+# 🐳 Docker
+docker-compose.override.yml
+docker/*.log
+*.pid
+*.seed
+*.log
+*.pid.lock
+*.sock
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Docker volumes
+mysql_data/
+node_modules/
+vendor/
+
+# Build cache
+**/.env
+**/.env.local
+**/.env.*.local
+.env
+.env.backup
+.env.save
+.envrc
+
+# System files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+desktop.ini
+
+# ===========================================
+# 🧩 BACKEND (Laravel)
+# ===========================================
+backend/vendor/
+backend/node_modules/
+backend/storage/*.key
+backend/storage/*.log
+backend/storage/debugbar/
+backend/storage/framework/cache/data/
+backend/storage/framework/sessions/
+backend/storage/framework/views/
+backend/storage/logs/
+backend/storage/app/public/
+backend/bootstrap/cache/*.php
+backend/public/storage
+backend/.phpunit.result.cache
+backend/composer.lock
+backend/phpunit.xml
+backend/phpunit.xml.bak
+backend/homestead.yaml
+backend/Homestead.yaml
+backend/.vscode/
+backend/.idea/
+backend/public/hot
+backend/public/build/
+backend/public/mix-manifest.json
+
+# ===========================================
+# 🌐 FRONTEND (Next.js)
+# ===========================================
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/dist/
+frontend/build/
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+frontend/coverage/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+frontend/.vercel/
+frontend/.vscode/
+frontend/.idea/
+
+# ===========================================
+# 🧠 VS Code / IDE configs
+# ===========================================
+.vscode/
+.idea/
+*.iml
+
+# ===========================================
+# 🧪 Test / Coverage
+# ===========================================
+coverage/
+clover.xml
+phpunit.xml.cache
+*.cover
+*.log
+test-output/

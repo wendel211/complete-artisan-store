@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getProducts, getCategories } from "../lib/api";
+import { useSearch } from "../context/SearchContext"; // ✅ Importa o contexto de busca global
 
 interface Product {
   id: number;
@@ -29,6 +30,7 @@ export default function HomePage() {
   const [bannerIndex, setBannerIndex] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const router = useRouter();
+  const { searchQuery } = useSearch(); // ✅ Pega texto da busca da Navbar
 
   const banners = [
     "/banners/banner1.png",
@@ -36,7 +38,7 @@ export default function HomePage() {
     "/banners/banner3.png",
   ];
 
-  // 🚀 Buscar categorias e produtos
+  // 🚀 Carrega categorias e produtos ao iniciar
   useEffect(() => {
     async function fetchData() {
       try {
@@ -56,11 +58,11 @@ export default function HomePage() {
     fetchData();
   }, []);
 
-  // 🔁 Quando a categoria muda, recarrega produtos filtrados
+  // 🔁 Quando muda a categoria selecionada, filtra novamente
   useEffect(() => {
     if (selectedCategory !== null) {
       setLoading(true);
-      getProducts(selectedCategory || undefined)
+      getProducts(selectedCategory)
         .then(setProducts)
         .catch((err) => console.error("Erro ao filtrar produtos:", err))
         .finally(() => setLoading(false));
@@ -77,6 +79,18 @@ export default function HomePage() {
 
   const handleViewDetails = (id: number) => router.push(`/product/${id}`);
 
+  // 🔍 Filtro local: busca global + categoria selecionada
+  const filteredProducts = products.filter((p) => {
+    const matchesCategory =
+      !selectedCategory || p.category?.name === selectedCategory;
+    const matchesSearch =
+      !searchQuery ||
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.description?.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  // 🌀 Tela de carregamento
   if (loading)
     return (
       <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-br from-[#faf9f6] to-[#f5f4f0]">
@@ -90,7 +104,7 @@ export default function HomePage() {
 
   return (
     <div className="bg-gradient-to-b from-[#faf9f6] via-white to-[#f5f4f0] min-h-screen text-gray-800">
-      {/* Banner rotativo */}
+      {/* 🖼️ Banner rotativo */}
       <section className="relative w-full h-[600px] overflow-hidden bg-gray-100">
         <div className="relative w-full h-full">
           {banners.map((src, i) => (
@@ -131,14 +145,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Barra de categorias dinâmica */}
+      {/* 🧭 Barra de categorias */}
       <section className="sticky top-0 z-40 bg-black text-white border-b border-gray-800">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center overflow-x-auto scrollbar-hide">
             <button
               onClick={() => {
                 setSelectedCategory(null);
-                getProducts().then(setProducts);
               }}
               className={`flex items-center gap-2 px-6 py-4 whitespace-nowrap font-medium transition-colors border-b-2 ${
                 selectedCategory === null
@@ -179,30 +192,36 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Produtos */}
+      {/* 🛍️ Produtos */}
       <section id="produtos" className="max-w-7xl mx-auto px-6 py-24">
         <div className="flex items-center justify-between mb-12">
           <div>
             <h2 className="text-4xl font-bold text-[#3e4a33] mb-2">
-              {selectedCategory ? selectedCategory : "Produtos em Destaque"}
+              {selectedCategory
+                ? selectedCategory
+                : searchQuery
+                ? `Resultados para: "${searchQuery}"`
+                : "Produtos em Destaque"}
             </h2>
             <p className="text-gray-600">
               {selectedCategory
                 ? `Mostrando produtos de ${selectedCategory}`
+                : searchQuery
+                ? "Resultados baseados na sua busca"
                 : "Peças únicas selecionadas especialmente para você"}
             </p>
           </div>
         </div>
 
-        {products.length === 0 ? (
+        {filteredProducts.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-gray-500 text-lg">
-              Nenhum produto encontrado nesta categoria.
+              Nenhum produto encontrado {searchQuery && `para "${searchQuery}"`}.
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {products.map((p) => (
+            {filteredProducts.map((p) => (
               <div
                 key={p.id}
                 className="group bg-white rounded-3xl overflow-hidden border border-gray-200 hover:border-[#4b6043] hover:shadow-2xl transition-all duration-300 flex flex-col"

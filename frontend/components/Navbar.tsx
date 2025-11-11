@@ -3,9 +3,11 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSearch } from "../context/SearchContext"; 
 
 export default function Navbar() {
   const router = useRouter();
+  const { searchQuery, setSearchQuery } = useSearch(); 
   const [user, setUser] = useState<{ name: string; email: string } | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showFrete, setShowFrete] = useState(true);
@@ -26,11 +28,9 @@ export default function Navbar() {
     };
   }, []);
 
-  // 🎯 Detecta o scroll e esconde a faixa
+  // 🎯 Esconde faixa superior ao rolar
   useEffect(() => {
-    const handleScroll = () => {
-      setShowFrete(window.scrollY < 50);
-    };
+    const handleScroll = () => setShowFrete(window.scrollY < 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -45,7 +45,7 @@ export default function Navbar() {
 
   return (
     <header className="fixed top-0 left-0 w-full z-50">
-      {/* 🔝 Faixa de frete grátis (some ao rolar) */}
+      {/* 🔝 Faixa de frete grátis */}
       <div
         className={`bg-gradient-to-r from-[#4b6043] to-[#5a7350] text-white text-center py-2.5 text-sm font-semibold tracking-wide transition-all duration-300 ${
           showFrete
@@ -58,20 +58,32 @@ export default function Navbar() {
 
       {/* 🌿 Navbar principal */}
       <nav className="bg-white/95 backdrop-blur-lg border-b border-gray-200 shadow-md">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          {/* Logo com estilo aprimorado */}
+        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center gap-6">
+          {/* 🏷️ Logo */}
           <Link
             href="/"
             className="text-2xl font-bold tracking-tight text-[#3e4a33] hover:text-[#4b6043] transition-all duration-300 hover:scale-105"
           >
-          MicroLoja
+            MicroLoja
           </Link>
 
-          {/* Menu Desktop */}
+          {/* 🔍 Campo de busca (desktop) */}
+          <div className="hidden md:flex items-center flex-1 max-w-md border border-gray-300 rounded-full px-4 py-1.5 bg-gray-50 focus-within:border-[#4b6043] focus-within:ring-1 focus-within:ring-[#4b6043] transition">
+            <input
+              type="text"
+              placeholder="Buscar produtos..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)} // ✅ Atualiza busca global
+              className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400"
+            />
+            <span className="text-[#4b6043] font-medium">🔍</span>
+          </div>
+
+          {/* 🧭 Menu Desktop */}
           <div className="hidden md:flex items-center gap-6">
             <Link
               href="/"
-              className="relative text-gray-700 font-medium hover:text-[#4b6043] transition-colors duration-300 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#4b6043] after:transition-all after:duration-300 hover:after:w-full pb-1"
+              className="relative text-gray-700 font-medium hover:text-[#4b6043] transition pb-1"
             >
               Início
             </Link>
@@ -80,15 +92,15 @@ export default function Navbar() {
               <>
                 <Link
                   href="/cart"
-                  className="relative text-gray-700 font-medium hover:text-[#4b6043] transition-colors duration-300 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#4b6043] after:transition-all after:duration-300 hover:after:w-full pb-1"
+                  className="text-gray-700 font-medium hover:text-[#4b6043] transition"
                 >
                   🛒 Carrinho
                 </Link>
                 <Link
                   href="/profile"
-                  className="relative text-gray-700 font-medium hover:text-[#4b6043] transition-colors duration-300 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#4b6043] after:transition-all after:duration-300 hover:after:w-full pb-1"
+                  className="text-gray-700 font-medium hover:text-[#4b6043] transition"
                 >
-                     Perfil
+                  👤 Perfil
                 </Link>
               </>
             )}
@@ -110,7 +122,7 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Botão Menu Mobile */}
+          {/* 📱 Botão Mobile */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="md:hidden flex flex-col justify-center items-center gap-1.5 p-2 text-gray-700 hover:text-[#4b6043] transition-all duration-300"
@@ -142,10 +154,22 @@ export default function Navbar() {
         }`}
       >
         <div className="flex flex-col items-center py-6 space-y-4">
+          {/* 🔍 Busca mobile */}
+          <div className="w-10/12 flex items-center border border-gray-300 rounded-full px-4 py-2 bg-gray-50 focus-within:border-[#4b6043]">
+            <input
+              type="text"
+              placeholder="Buscar produtos..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)} // ✅ Mesma integração
+              className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400"
+            />
+            <span className="text-[#4b6043]">🔍</span>
+          </div>
+
           <Link
             href="/"
             onClick={() => setMenuOpen(false)}
-            className="text-gray-700 font-medium hover:text-[#4b6043] transition-colors duration-300 px-6 py-2 rounded-lg hover:bg-gray-50 w-40 text-center"
+            className="text-gray-700 font-medium hover:text-[#4b6043] transition px-6 py-2"
           >
             Início
           </Link>
@@ -155,14 +179,14 @@ export default function Navbar() {
               <Link
                 href="/cart"
                 onClick={() => setMenuOpen(false)}
-                className="text-gray-700 font-medium hover:text-[#4b6043] transition-colors duration-300 px-6 py-2 rounded-lg hover:bg-gray-50 w-40 text-center"
+                className="text-gray-700 font-medium hover:text-[#4b6043] transition px-6 py-2"
               >
                 🛒 Carrinho
               </Link>
               <Link
                 href="/profile"
                 onClick={() => setMenuOpen(false)}
-                className="text-gray-700 font-medium hover:text-[#4b6043] transition-colors duration-300 px-6 py-2 rounded-lg hover:bg-gray-50 w-40 text-center"
+                className="text-gray-700 font-medium hover:text-[#4b6043] transition px-6 py-2"
               >
                 👤 Perfil
               </Link>
@@ -173,7 +197,7 @@ export default function Navbar() {
             <Link
               href="/login"
               onClick={() => setMenuOpen(false)}
-              className="px-8 py-2.5 bg-[#4b6043] text-white font-semibold rounded-full hover:bg-[#3e4a33] transition-all duration-300 hover:shadow-lg"
+              className="px-8 py-2 bg-[#4b6043] text-white font-semibold rounded-full hover:bg-[#3e4a33] transition"
             >
               Entrar
             </Link>
@@ -183,7 +207,7 @@ export default function Navbar() {
                 handleLogout();
                 setMenuOpen(false);
               }}
-              className="px-8 py-2.5 bg-gray-100 text-gray-700 font-semibold rounded-full hover:bg-red-50 hover:text-red-600 transition-all duration-300"
+              className="px-8 py-2 bg-gray-100 text-gray-700 font-semibold rounded-full hover:bg-red-50 hover:text-red-600 transition"
             >
               Sair
             </button>

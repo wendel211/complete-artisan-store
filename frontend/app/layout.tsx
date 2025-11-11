@@ -23,7 +23,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               <span className="font-semibold text-green-700">
                 MicroLoja Artesanal
               </span>{" "}
-              — feito com ❤️ por Wendel Muniz
+              — feito por Wendel Muniz
             </p>
             <div className="flex gap-4 text-sm text-gray-500">
               <Link href="#" className="hover:text-green-700 transition-colors">

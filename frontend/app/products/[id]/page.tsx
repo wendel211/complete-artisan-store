@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { getProductById } from "@/lib/api";
+import { getProductById } from "../../../lib/api";
 
 interface Product {
   id: number;

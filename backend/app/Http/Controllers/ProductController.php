@@ -26,6 +26,7 @@ class ProductController extends Controller
             'price' => 'required|numeric',
             'stock' => 'required|integer',
             'image_url' => 'nullable|string|max:255',
+            'category_id' => 'required|integer',
         ]);
 
         $product = Product::create($validated);
@@ -52,6 +53,7 @@ class ProductController extends Controller
             'price' => 'sometimes|numeric',
             'stock' => 'sometimes|integer',
             'image_url' => 'nullable|string|max:255',
+            'category_id' => 'sometimes|integer',
         ]);
 
         $product->update($validated);

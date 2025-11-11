@@ -7,7 +7,7 @@ interface CartItem {
   id: number;
   name: string;
   price: number;
-  image_url: string;
+  image_url: string | null;
   quantity: number;
 }
 
@@ -21,6 +21,16 @@ export default function CartPage() {
 
   const removeItem = (id: number) => {
     const updated = cart.filter((item) => item.id !== id);
+    setCart(updated);
+    localStorage.setItem("cart", JSON.stringify(updated));
+  };
+
+  const updateQuantity = (id: number, amount: number) => {
+    const updated = cart.map((item) =>
+      item.id === id
+        ? { ...item, quantity: Math.max(1, item.quantity + amount) }
+        : item
+    );
     setCart(updated);
     localStorage.setItem("cart", JSON.stringify(updated));
   };
@@ -58,7 +68,10 @@ export default function CartPage() {
               >
                 <div className="flex items-center gap-4">
                   <img
-                    src={item.image_url}
+                    src={
+                      item.image_url ||
+                      "https://placehold.co/100x100?text=Produto"
+                    }
                     alt={item.name}
                     className="w-24 h-24 object-cover rounded-md"
                   />
@@ -72,7 +85,20 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                <div className="mt-3 md:mt-0 flex gap-3">
+                <div className="flex items-center gap-4 mt-3 md:mt-0">
+                  <button
+                    onClick={() => updateQuantity(item.id, -1)}
+                    className="text-lg font-bold text-gray-600 hover:text-green-700"
+                  >
+                    −
+                  </button>
+                  <span>{item.quantity}</span>
+                  <button
+                    onClick={() => updateQuantity(item.id, 1)}
+                    className="text-lg font-bold text-gray-600 hover:text-green-700"
+                  >
+                    +
+                  </button>
                   <button
                     onClick={() => removeItem(item.id)}
                     className="text-red-600 hover:underline"

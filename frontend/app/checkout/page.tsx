@@ -24,10 +24,10 @@ export default function CheckoutPage() {
     0
   );
 
-  function handleConfirm() {
+  const confirmOrder = () => {
     localStorage.removeItem("cart");
     setConfirmed(true);
-  }
+  };
 
   if (confirmed)
     return (
@@ -89,7 +89,7 @@ export default function CheckoutPage() {
 
           <div className="text-center mt-10">
             <button
-              onClick={handleConfirm}
+              onClick={confirmOrder}
               className="bg-green-600 hover:bg-green-700 text-white px-10 py-3 rounded-lg font-medium transition"
             >
               Confirmar Pedido

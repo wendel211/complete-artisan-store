@@ -1,82 +1,46 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { getProducts } from "../lib/api";
 
 interface Product {
   id: number;
   name: string;
   description: string;
   price: number;
-  image_url: string;
+  image_url: string | null;
+  stock: number;
 }
 
 export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Dados simulados – futuramente virão da API Laravel
-    setProducts([
-      {
-        id: 1,
-        name: "Vaso de Cerâmica Artesanal",
-        description:
-          "Feito à mão com argila natural e acabamento esmaltado. Uma peça única para decoração.",
-        price: 89.9,
-        image_url: "https://placehold.co/400x400?text=Vaso+Artesanal",
-      },
-      {
-        id: 2,
-        name: "Bolsa de Crochê Sustentável",
-        description:
-          "Produzida com fio ecológico e design exclusivo. Ideal para o dia a dia.",
-        price: 129.9,
-        image_url: "https://placehold.co/400x400?text=Bolsa+Croch%C3%AA",
-      },
-      {
-        id: 3,
-        name: "Sabonete Natural Vegano",
-        description:
-          "Com óleos essenciais e fragrâncias suaves, perfeito para cuidados diários.",
-        price: 19.9,
-        image_url: "https://placehold.co/400x400?text=Sabonete+Vegano",
-      },
-      {
-        id: 4,
-        name: "Quadro Decorativo em Madeira",
-        description:
-          "Trabalho artesanal em madeira de reflorestamento, ideal para ambientes rústicos.",
-        price: 210.0,
-        image_url: "https://placehold.co/400x400?text=Quadro+Decorativo",
-      },
-    ]);
+    getProducts()
+      .then((data) => setProducts(data))
+      .catch((err) => console.error("Erro:", err))
+      .finally(() => setLoading(false));
   }, []);
 
+  if (loading)
+    return (
+      <div className="flex flex-col items-center justify-center h-screen text-gray-700">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green-600 mb-3"></div>
+        <p>Carregando produtos...</p>
+      </div>
+    );
+
   return (
-    <div className="max-w-7xl mx-auto px-6">
-      {/* Hero Section */}
-      <section className="text-center py-16 bg-gradient-to-r from-green-50 to-green-100 rounded-3xl shadow-sm mb-12">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-green-800 mb-4">
-          Bem-vindo à MicroLoja Artesanal
-        </h1>
-        <p className="text-gray-600 max-w-2xl mx-auto mb-8 text-lg">
-          Produtos únicos feitos à mão com amor 💚 Apoie o trabalho artesanal e
-          leve autenticidade para o seu dia a dia.
-        </p>
-        <a
-          href="#produtos"
-          className="inline-block bg-green-600 hover:bg-green-700 text-white font-medium px-8 py-3 rounded-lg transition"
-        >
-          Explorar Produtos
-        </a>
-      </section>
+    <div className="max-w-7xl mx-auto px-6 py-10">
+      <h1 className="text-3xl font-bold text-center mb-10 text-gray-800">
+        🛍️ Produtos Artesanais
+      </h1>
 
-      {/* Grade de produtos */}
-      <section id="produtos" className="pb-12">
-        <h2 className="text-2xl font-semibold mb-8 text-gray-800 text-center">
-          Produtos em Destaque
-        </h2>
-
+      {products.length === 0 ? (
+        <p className="text-center text-gray-500">Nenhum produto cadastrado.</p>
+      ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {products.map((p) => (
             <div
@@ -84,7 +48,10 @@ export default function HomePage() {
               className="bg-white rounded-2xl shadow hover:shadow-lg transition-all overflow-hidden flex flex-col"
             >
               <img
-                src={p.image_url}
+                src={
+                  p.image_url ||
+                  "https://placehold.co/400x400?text=Produto+sem+imagem"
+                }
                 alt={p.name}
                 className="w-full h-56 object-cover"
               />
@@ -99,13 +66,18 @@ export default function HomePage() {
                 </div>
 
                 <div className="mt-4">
-                  <p className="text-green-700 font-bold text-lg mb-2">
-                    R$ {p.price.toFixed(2)}
+                  <p className="text-green-700 font-bold text-lg">
+                    R$ {Number(p.price).toFixed(2)}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {p.stock > 0
+                      ? `Estoque: ${p.stock} un.`
+                      : "Indisponível"}
                   </p>
 
                   <Link
                     href={`/product/${p.id}`}
-                    className="inline-block w-full bg-green-600 text-white text-center font-medium py-2 rounded-lg hover:bg-green-700 transition"
+                    className="mt-3 inline-block w-full bg-green-600 text-white text-center font-medium py-2 rounded-lg hover:bg-green-700 transition"
                   >
                     Ver Detalhes
                   </Link>
@@ -114,7 +86,7 @@ export default function HomePage() {
             </div>
           ))}
         </div>
-      </section>
+      )}
     </div>
   );
 }

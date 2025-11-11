@@ -30,6 +30,7 @@ export default function CheckoutPage() {
     payment: "Pix",
   });
 
+  // 🔄 Carrega dados iniciais
   useEffect(() => {
     setMounted(true);
 
@@ -39,36 +40,42 @@ export default function CheckoutPage() {
       return;
     }
 
-    const parsedUser = JSON.parse(savedUser);
-    setUser(parsedUser);
-    setIsLogged(true);
+    try {
+      const parsedUser = JSON.parse(savedUser);
+      setUser(parsedUser);
+      setIsLogged(true);
+    } catch {
+      localStorage.removeItem("user");
+      router.push("/login");
+      return;
+    }
 
     const savedCart = localStorage.getItem("cart");
     if (savedCart) setCart(JSON.parse(savedCart));
   }, [router]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const total = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
 
+  // 📦 Confirma pedido e salva no localStorage
   const handleConfirm = () => {
     if (!form.address || !form.city || !form.state || !form.cep) {
-      alert("Preencha todos os campos de endereço!");
+      alert("Por favor, preencha todos os campos de endereço!");
       return;
     }
 
-    // Gera número de pedido aleatório
     const orderNumber = `#MLA-${Math.floor(1000 + Math.random() * 9000)}`;
     setOrderCode(orderNumber);
     setOrderPlaced(true);
 
-    // Limpa carrinho e salva pedido localmente
     localStorage.removeItem("cart");
+
     const newOrder = {
       user,
       items: cart,
@@ -97,27 +104,31 @@ export default function CheckoutPage() {
       </div>
     );
 
+  // 🎉 Tela de confirmação
   if (orderPlaced)
     return (
       <div className="flex flex-col items-center justify-center min-h-screen text-center px-6">
-        <h1 className="text-3xl font-bold text-green-700 mb-4">
+        <h1 className="text-3xl font-bold text-[#4b6043] mb-4">
           🎉 Pedido Confirmado!
         </h1>
         <p className="text-lg text-gray-700 mb-2">
-          Obrigado pela sua compra, <span className="font-semibold">{user?.name}</span>!
+          Obrigado pela sua compra,{" "}
+          <span className="font-semibold">{user?.name}</span>!
         </p>
         <p className="text-gray-600 mb-6">
-          Número do pedido: <span className="font-semibold">{orderCode}</span>
+          Número do pedido:{" "}
+          <span className="font-semibold">{orderCode}</span>
         </p>
         <Link
           href="/"
-          className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition"
+          className="bg-gradient-to-r from-[#4b6043] to-[#5a7350] hover:from-[#5a7350] hover:to-[#4b6043] text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:scale-105"
         >
-          Voltar à loja
+          Voltar à Loja
         </Link>
       </div>
     );
 
+  // 🧾 Tela principal
   return (
     <div className="max-w-6xl mx-auto px-6 py-12">
       <h1 className="text-3xl font-bold text-center text-gray-800 mb-10">
@@ -152,13 +163,15 @@ export default function CheckoutPage() {
                       className="w-16 h-16 rounded-md object-cover"
                     />
                     <div>
-                      <p className="font-medium">{item.name}</p>
+                      <p className="font-medium text-gray-800 line-clamp-1">
+                        {item.name}
+                      </p>
                       <p className="text-sm text-gray-500">
                         {item.quantity}x R$ {item.price.toFixed(2)}
                       </p>
                     </div>
                   </div>
-                  <p className="text-green-700 font-semibold">
+                  <p className="text-[#4b6043] font-semibold">
                     R$ {(item.price * item.quantity).toFixed(2)}
                   </p>
                 </div>
@@ -167,7 +180,7 @@ export default function CheckoutPage() {
               <div className="border-t pt-4 mt-4 text-right">
                 <p className="text-lg font-semibold text-gray-800">
                   Total:{" "}
-                  <span className="text-green-700">
+                  <span className="text-[#4b6043]">
                     R$ {total.toFixed(2)}
                   </span>
                 </p>
@@ -188,7 +201,7 @@ export default function CheckoutPage() {
               placeholder="Rua, número e complemento"
               value={form.address}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-600 outline-none"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#4b6043] outline-none"
             />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <input
@@ -196,14 +209,14 @@ export default function CheckoutPage() {
                 placeholder="Cidade"
                 value={form.city}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-600 outline-none"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#4b6043] outline-none"
               />
               <input
                 name="state"
                 placeholder="Estado"
                 value={form.state}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-600 outline-none"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#4b6043] outline-none"
               />
             </div>
             <input
@@ -211,7 +224,7 @@ export default function CheckoutPage() {
               placeholder="CEP"
               value={form.cep}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-600 outline-none"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#4b6043] outline-none"
             />
 
             <div>
@@ -222,7 +235,7 @@ export default function CheckoutPage() {
                 name="payment"
                 value={form.payment}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-600 outline-none"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#4b6043] outline-none"
               >
                 <option>Pix</option>
                 <option>Cartão de Crédito</option>
@@ -232,7 +245,7 @@ export default function CheckoutPage() {
 
             <button
               onClick={handleConfirm}
-              className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg mt-4 transition"
+              className="w-full bg-gradient-to-r from-[#4b6043] to-[#5a7350] hover:from-[#5a7350] hover:to-[#4b6043] text-white font-semibold py-3 rounded-lg mt-4 transition-all duration-300 hover:scale-105"
             >
               Confirmar Pedido
             </button>

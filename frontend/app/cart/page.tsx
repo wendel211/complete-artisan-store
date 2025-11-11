@@ -15,11 +15,17 @@ export default function CartPage() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [mounted, setMounted] = useState(false);
 
-  // 🔄 Evita erro de hidratação e garante leitura segura do localStorage
+  // Evita erro de hidratação e garante leitura segura do localStorage
   useEffect(() => {
     setMounted(true);
     const saved = localStorage.getItem("cart");
-    if (saved) setCart(JSON.parse(saved));
+    if (saved) {
+      try {
+        setCart(JSON.parse(saved));
+      } catch {
+        localStorage.removeItem("cart");
+      }
+    }
   }, []);
 
   const persistCart = (updated: CartItem[]) => {
@@ -64,19 +70,21 @@ export default function CartPage() {
           <p className="mb-6">Seu carrinho está vazio.</p>
           <Link
             href="/"
-            className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition"
+            className="bg-gradient-to-r from-[#4b6043] to-[#5a7350] hover:from-[#5a7350] hover:to-[#4b6043] text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:scale-105"
           >
             Voltar à Loja
           </Link>
         </div>
       ) : (
         <>
+          {/* Lista de itens */}
           <div className="space-y-6">
             {cart.map((item) => (
               <div
                 key={item.id}
-                className="flex flex-col md:flex-row items-center justify-between bg-white shadow-sm hover:shadow-md p-4 rounded-xl transition"
+                className="flex flex-col md:flex-row items-center justify-between bg-white border border-gray-200 shadow-sm hover:shadow-md p-4 rounded-xl transition"
               >
+                {/* Produto */}
                 <div className="flex items-center gap-4 w-full md:w-auto">
                   <img
                     src={
@@ -87,19 +95,20 @@ export default function CartPage() {
                     className="w-24 h-24 object-cover rounded-md border"
                   />
                   <div>
-                    <h2 className="font-semibold text-lg text-gray-800">
+                    <h2 className="font-semibold text-lg text-gray-800 line-clamp-1">
                       {item.name}
                     </h2>
-                    <p className="text-green-700 font-bold">
+                    <p className="text-[#4b6043] font-bold">
                       R$ {item.price.toFixed(2)}
                     </p>
                   </div>
                 </div>
 
+                {/* Controles */}
                 <div className="flex items-center gap-4 mt-4 md:mt-0">
                   <button
                     onClick={() => updateQuantity(item.id, -1)}
-                    className="text-lg font-bold text-gray-600 hover:text-green-700"
+                    className="text-lg font-bold text-gray-600 hover:text-[#4b6043] transition"
                   >
                     −
                   </button>
@@ -108,13 +117,13 @@ export default function CartPage() {
                   </span>
                   <button
                     onClick={() => updateQuantity(item.id, 1)}
-                    className="text-lg font-bold text-gray-600 hover:text-green-700"
+                    className="text-lg font-bold text-gray-600 hover:text-[#4b6043] transition"
                   >
                     +
                   </button>
                   <button
                     onClick={() => removeItem(item.id)}
-                    className="text-red-600 hover:text-red-700 text-sm font-medium"
+                    className="text-red-600 hover:text-red-700 text-sm font-medium transition"
                   >
                     Remover
                   </button>
@@ -123,16 +132,17 @@ export default function CartPage() {
             ))}
           </div>
 
+          {/* Rodapé do carrinho */}
           <div className="mt-10 flex flex-col md:flex-row items-center justify-between border-t pt-6">
             <p className="text-xl font-semibold text-gray-800 mb-4 md:mb-0">
               Total:{" "}
-              <span className="text-green-700 font-bold">
+              <span className="text-[#4b6043] font-extrabold">
                 R$ {total.toFixed(2)}
               </span>
             </p>
             <Link
               href="/checkout"
-              className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-medium transition"
+              className="bg-gradient-to-r from-[#4b6043] to-[#5a7350] hover:from-[#5a7350] hover:to-[#4b6043] text-white px-8 py-3 rounded-lg font-medium transition-all duration-300 hover:scale-105"
             >
               Finalizar Pedido
             </Link>

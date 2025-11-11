@@ -9,10 +9,21 @@ class ProductController extends Controller
 {
     /**
      * Retorna todos os produtos (GET /api/products)
+     * Suporta filtro opcional por categoria: /api/products?category=Cerâmica
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Product::all(), 200);
+        $query = Product::with('category');
+
+        // 🔍 Se a requisição tiver ?category=NomeDaCategoria, filtra
+        if ($request->has('category')) {
+            $categoryName = $request->query('category');
+            $query->whereHas('category', function ($q) use ($categoryName) {
+                $q->where('name', $categoryName);
+            });
+        }
+
+        return response()->json($query->get(), 200);
     }
 
     /**
@@ -26,12 +37,12 @@ class ProductController extends Controller
             'price' => 'required|numeric',
             'stock' => 'required|integer',
             'image_url' => 'nullable|string|max:255',
-            'category_id' => 'required|integer',
+            'category_id' => 'required|exists:categories,id',
         ]);
 
         $product = Product::create($validated);
 
-        return response()->json($product, 201);
+        return response()->json($product->load('category'), 201);
     }
 
     /**
@@ -39,6 +50,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
+        $product->load('category');
         return response()->json($product, 200);
     }
 
@@ -53,12 +65,12 @@ class ProductController extends Controller
             'price' => 'sometimes|numeric',
             'stock' => 'sometimes|integer',
             'image_url' => 'nullable|string|max:255',
-            'category_id' => 'sometimes|integer',
+            'category_id' => 'sometimes|exists:categories,id',
         ]);
 
         $product->update($validated);
 
-        return response()->json($product, 200);
+        return response()->json($product->load('category'), 200);
     }
 
     /**

@@ -9,9 +9,6 @@ class Product extends Model
 {
     use HasFactory;
 
-    /**
-     * Campos que podem ser preenchidos em massa (mass assignment)
-     */
     protected $fillable = [
         'name',
         'description',
@@ -21,12 +18,16 @@ class Product extends Model
         'category_id',
     ];
 
-    /**
-     * Tipos de dados para casting automático
-     */
     protected $casts = [
-    'price' => 'float',
-    'stock' => 'integer',
+        'price' => 'float',
+        'stock' => 'integer',
     ];
 
+    /**
+     * Um produto pertence a uma categoria.
+     */
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

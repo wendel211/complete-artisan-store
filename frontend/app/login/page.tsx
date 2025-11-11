@@ -23,10 +23,14 @@ export default function LoginPage() {
       return;
     }
 
-    // Simula autenticação
+    // Simula autenticação local
     if (email === "demo@microloja.com" && password === "123456") {
       const user = { name: "Cliente Demo", email };
+
+      // ✅ Salva usuário e notifica Navbar/Profile
       localStorage.setItem("user", JSON.stringify(user));
+      window.dispatchEvent(new Event("user-updated"));
+
       alert("Login realizado com sucesso!");
       router.push("/");
     } else {

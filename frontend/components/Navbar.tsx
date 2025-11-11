@@ -2,19 +2,39 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
+  const router = useRouter();
   const [user, setUser] = useState<{ name: string; email: string } | null>(null);
 
+  // 🔄 Atualiza automaticamente quando o nome for alterado no perfil
   useEffect(() => {
-    const saved = localStorage.getItem("user");
-    if (saved) setUser(JSON.parse(saved));
+    const loadUser = () => {
+      const saved = localStorage.getItem("user");
+      setUser(saved ? JSON.parse(saved) : null);
+    };
+
+    loadUser();
+
+    // Ouvinte para capturar mudanças de user em outras abas ou updates
+    window.addEventListener("storage", loadUser);
+
+    // Atualiza também quando voltar do profile sem reload
+    window.addEventListener("user-updated", loadUser);
+
+    return () => {
+      window.removeEventListener("storage", loadUser);
+      window.removeEventListener("user-updated", loadUser);
+    };
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    setUser(null);
-    window.location.href = "/";
+    if (confirm("Deseja sair da sua conta?")) {
+      localStorage.removeItem("user");
+      setUser(null);
+      router.push("/login");
+    }
   };
 
   return (
@@ -31,12 +51,28 @@ export default function Navbar() {
           <Link href="/" className="hover:text-green-700 transition-colors">
             Início
           </Link>
-          <Link href="/cart" className="hover:text-green-700 transition-colors">
-            Carrinho
-          </Link>
 
-          {user ? (
+          {/* ✅ Carrinho e Perfil só aparecem se o usuário estiver logado */}
+          {user && (
             <>
+              <Link
+                href="/cart"
+                className="hover:text-green-700 transition-colors"
+              >
+                Carrinho
+              </Link>
+              <Link
+                href="/profile"
+                className="hover:text-green-700 transition-colors"
+              >
+                Perfil
+              </Link>
+            </>
+          )}
+
+          {/* ✅ Exibição dinâmica do nome e opções */}
+          {user ? (
+            <div className="flex items-center space-x-3">
               <span className="text-green-700 font-semibold">
                 Olá, {user.name.split(" ")[0]} 👋
               </span>
@@ -46,7 +82,7 @@ export default function Navbar() {
               >
                 Sair
               </button>
-            </>
+            </div>
           ) : (
             <Link
               href="/login"
@@ -56,6 +92,16 @@ export default function Navbar() {
             </Link>
           )}
         </nav>
+
+        {/* 🔸 Menu Mobile (pode ser implementado futuramente) */}
+        <div className="md:hidden">
+          <button
+            type="button"
+            className="p-2 text-gray-600 hover:text-green-700 transition"
+          >
+            ☰
+          </button>
+        </div>
       </div>
     </header>
   );

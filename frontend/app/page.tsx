@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { getProducts } from "../lib/api";
 
 interface Product {
@@ -16,6 +16,7 @@ interface Product {
 export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     getProducts()
@@ -31,6 +32,10 @@ export default function HomePage() {
         <p>Carregando produtos...</p>
       </div>
     );
+
+  const handleViewDetails = (id: number) => {
+    router.push(`/product/${id}`);
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-10">
@@ -55,6 +60,7 @@ export default function HomePage() {
                 alt={p.name}
                 className="w-full h-56 object-cover"
               />
+
               <div className="p-5 flex-1 flex flex-col justify-between">
                 <div>
                   <h3 className="font-semibold text-lg text-gray-800 mb-1">
@@ -75,12 +81,12 @@ export default function HomePage() {
                       : "Indisponível"}
                   </p>
 
-                  <Link
-                    href={`/product/${p.id}`}
-                    className="mt-3 inline-block w-full bg-green-600 text-white text-center font-medium py-2 rounded-lg hover:bg-green-700 transition"
+                  <button
+                    onClick={() => handleViewDetails(p.id)}
+                    className="mt-3 w-full bg-green-600 text-white text-center font-medium py-2 rounded-lg hover:bg-green-700 transition"
                   >
                     Ver Detalhes
-                  </Link>
+                  </button>
                 </div>
               </div>
             </div>

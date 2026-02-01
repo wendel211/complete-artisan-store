@@ -401,7 +401,7 @@ Lista todas as categorias disponíveis.
 
 ---
 
-## 🛠️ Scripts Úteis
+## Scripts Úteis
 
 ### Backend (Laravel)
 ```bash
@@ -435,7 +435,7 @@ npm run lint
 
 ---
 
-## 🚧 Roadmap
+## Roadmap
 
 ### Fase 1 (Concluída)
 - [x] Setup inicial do projeto
@@ -491,12 +491,3 @@ Este projeto está sob a licença **MIT**. Veja o arquivo [LICENSE](LICENSE) par
 ## Autor
 
 **Wendel Muniz**
-
--  Website: [seu-site.com]((https://wendel-muniz-portfolio.vercel.app/))
----
-
-
-<div align="center">
-
-**⭐ Se este projeto foi útil, considere dar uma estrela!**
-</div>

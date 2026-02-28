@@ -447,22 +447,6 @@ npm run lint
 - [x] Sistema de checkout
 - [x] Busca e filtros
 
-### 🔄 Fase 2 (Em Desenvolvimento)
-- [ ] Integração com gateway de pagamento (Stripe/PagSeguro)
-- [ ] Sistema de avaliações e comentários
-- [ ] Upload de múltiplas imagens por produto
-- [ ] Painel administrativo completo
-- [ ] Gestão de estoque avançada
-- [ ] Sistema de notificações
-
-###  Fase 3 (Planejado)
-- [ ] Sistema de cupons e descontos
-- [ ] Recomendações personalizadas com IA
-- [ ] Chat em tempo real com vendedores
-- [ ] App mobile (React Native)
-- [ ] Sistema de favoritos/lista de desejos
-- [ ] Integração com redes sociais
-
 ---
 
 ### Padrões de Código
@@ -490,4 +474,6 @@ Este projeto está sob a licença **MIT**. Veja o arquivo [LICENSE](LICENSE) par
 
 ## Autor
 
-**Wendel Muniz**
+Wendel Muniz dos Santos
+
+
